@@ -124,10 +124,6 @@ elif nota == 10:
     print("Excelente 🏆 ¡Hat-trick perfecto!")
     animacion_aprobado()
 
-# ==========================
-# GENERAR INFORME MARKDOWN
-# ==========================
-
 informe += f"## 📝 Resumen\n\n"
 informe += f"- Correctas: {correctas}\n"
 informe += f"- Incorrectas: {incorrectas}\n"
