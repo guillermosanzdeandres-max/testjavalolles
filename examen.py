@@ -1,136 +1,140 @@
+import streamlit as st
 
+# Lista de preguntas (9 en total)
 preguntas = [
-    {
-        "pregunta": "1. ¿Qué selección ganó el Mundial de 2010?\n"
-                    "a) Brasil\n"
-                    "b) Alemania\n"
-                    "c) España\n"
-                    "d) Argentina\n",
-        "correcta": "c"
-    },
-    {
-        "pregunta": "2. ¿En qué club jugó la mayor parte de su carrera Lionel Messi?\n"
-                    "a) Real Madrid\n"
-                    "b) FC Barcelona\n"
-                    "c) Manchester City\n"
-                    "d) Juventus\n",
-        "correcta": "b"
-    },
-    {
-        "pregunta": "3. ¿Cuántos jugadores hay en un equipo en el campo?\n"
-                    "a) 9\n"
-                    "b) 10\n"
-                    "c) 11\n"
-                    "d) 12\n",
-        "correcta": "c"
-    },
-    {
-        "pregunta": "4. ¿Qué país organiza la Premier League?\n"
-                    "a) España\n"
-                    "b) Italia\n"
-                    "c) Alemania\n"
-                    "d) Inglaterra\n",
-        "correcta": "d"
-    },
-    {
-        "pregunta": "5. ¿Qué jugador es conocido como CR7?\n"
-                    "a) Neymar\n"
-                    "b) Cristiano Ronaldo\n"
-                    "c) Mbappé\n"
-                    "d) Benzema\n",
-        "correcta": "b"
-    },
-    {
-        "pregunta": "6. ¿Cada cuántos años se celebra el Mundial?\n"
-                    "a) 2\n"
-                    "b) 3\n"
-                    "c) 4\n"
-                    "d) 5\n",
-        "correcta": "c"
-    },
-    {
-        "pregunta": "7. ¿Qué equipo ha ganado más Champions League?\n"
-                    "a) FC Barcelona\n"
-                    "b) Bayern Munich\n"
-                    "c) Real Madrid\n"
-                    "d) Liverpool\n",
-        "correcta": "c"
-    },
-    {
-        "pregunta": "8. ¿Qué tarjeta implica expulsión directa?\n"
-                    "a) Amarilla\n"
-                    "b) Roja\n"
-                    "c) Azul\n"
-                    "d) Verde\n",
-        "correcta": "b"
-    },
-    {
-        "pregunta": "9. ¿Cuánto dura un partido oficial (sin prórroga)?\n"
-                    "a) 80 minutos\n"
-                    "b) 90 minutos\n"
-                    "c) 100 minutos\n"
-                    "d) 120 minutos\n",
-        "correcta": "b"
-    }
+    {"texto": "¿Qué país ha ganado más Mundiales?", 
+     "opciones": ["Brasil", "Alemania", "Italia", "Argentina"], 
+     "correcta": "Brasil"},
+
+    {"texto": "¿Cuántos jugadores hay en el campo por equipo?", 
+     "opciones": ["9", "10", "11", "12"], 
+     "correcta": "11"},
+
+    {"texto": "¿Qué jugador es conocido como CR7?", 
+     "opciones": ["Cristiano Ronaldo", "Messi", "Mbappé", "Benzema"], 
+     "correcta": "Cristiano Ronaldo"},
+
+    {"texto": "¿Qué competición juegan los mejores clubes de Europa?", 
+     "opciones": ["Europa League", "Champions League", "Conference League"], 
+     "correcta": "Champions League"},
+
+    {"texto": "¿Qué país ganó el Mundial 2010?", 
+     "opciones": ["España", "Brasil", "Alemania"], 
+     "correcta": "España"},
+
+    {"texto": "¿Cuánto dura un partido de fútbol?", 
+     "opciones": ["80 minutos", "90 minutos", "100 minutos"], 
+     "correcta": "90 minutos"},
+
+    {"texto": "¿Qué tarjeta significa expulsión?", 
+     "opciones": ["Amarilla", "Roja", "Azul"], 
+     "correcta": "Roja"},
+
+    {"texto": "¿Qué jugador argentino ganó el Mundial 2022?", 
+     "opciones": ["Messi", "Di María", "Agüero"], 
+     "correcta": "Messi"},
+
+    {"texto": "¿En qué club jugó muchos años Messi?", 
+     "opciones": ["Barcelona", "PSG", "Inter Miami"], 
+     "correcta": "Barcelona"}
 ]
 
-correctas = 0
-incorrectas = 0
-informe = "# ⚽ Informe del Examen de Fútbol\n\n"
+st.title("⚽ Examen de fútbol")
+st.write("Responde las preguntas y pulsa entregar para ver tu nota.")
 
-for i, p in enumerate(preguntas):
-    respuesta = input(p["pregunta"] + "Tu respuesta (a/b/c/d o Enter para dejar en blanco): ").lower()
+# Creamos dos pestañas
+tab1, tab2 = st.tabs(["Examen", "Informe"])
 
-    if respuesta == "":
-        informe += f"❔ Pregunta {i+1}: En blanco\n\n"
-    elif respuesta == p["correcta"]:
-        correctas += 1
-        informe += f"✅ Pregunta {i+1}: Correcta\n\n"
+with tab1:
+
+    with st.form("formulario"):
+
+        respuestas_usuario = []
+
+        # Mostrar preguntas
+        for pregunta in preguntas:
+            st.subheader(pregunta["texto"])
+
+            opciones = [""] + pregunta["opciones"]  # opción en blanco
+            respuesta = st.radio("Selecciona una opción:", opciones, key=pregunta["texto"])
+
+            respuestas_usuario.append(respuesta)
+
+        enviar = st.form_submit_button("Entregar examen")
+
+    if enviar:
+
+        aciertos = 0
+        errores = 0
+        total = len(preguntas)
+
+        # Corrección
+        for i in range(total):
+
+            if respuestas_usuario[i] == "":
+                pass  # si está en blanco no suma
+
+            elif respuestas_usuario[i] == preguntas[i]["correcta"]:
+                aciertos += 1
+
+            else:
+                errores += 1
+
+        puntuacion = aciertos - errores
+        nota = (puntuacion / total) * 10
+
+        # Redondear la nota
+        nota = round(nota, 2)
+
+        st.header(f"Nota final: {nota} / 10")
+
+        # Feedback según la nota
+        if nota < 2:
+            st.error("Muy insuficiente 😬")
+        elif nota < 5:
+            st.warning("Insuficiente")
+        elif nota < 6:
+            st.info("Suficiente")
+            st.snow()
+        elif nota < 7:
+            st.success("Bien 👍")
+            st.balloons()
+        elif nota < 9:
+            st.success("Notable ⭐")
+            st.balloons()
+        elif nota < 10:
+            st.success("Sobresaliente 🏆")
+            st.balloons()
+        else:
+            st.success("Excelente 💯")
+            st.balloons()
+
+        # Guardamos datos para el informe
+        st.session_state["respuestas"] = respuestas_usuario
+
+with tab2:
+
+    st.header("Informe del examen")
+
+    if "respuestas" in st.session_state:
+
+        respuestas = st.session_state["respuestas"]
+
+        informe = "# Resultados\n\n"
+
+        for i in range(len(preguntas)):
+
+            informe += f"### Pregunta {i+1}\n"
+            informe += f"**Pregunta:** {preguntas[i]['texto']}\n\n"
+            informe += f"**Tu respuesta:** {respuestas[i]}\n\n"
+            informe += f"**Respuesta correcta:** {preguntas[i]['correcta']}\n\n"
+
+            if respuestas[i] == preguntas[i]["correcta"]:
+                informe += "✅ Correcta\n\n"
+            else:
+                informe += "❌ Incorrecta\n\n"
+
+        st.markdown(informe)
+
     else:
-        incorrectas += 1
-        informe += f"❌ Pregunta {i+1}: Incorrecta\n\n"
-
-nota = (correctas - incorrectas) * (10 / 9)
-
-if nota < 0:
-    nota = 0
-
-nota = round(nota, 2)  # 🔹 Nota redondead
-
-print("\nTu nota final es:", nota)
-
-def animacion_aprobado():
-    for _ in range(3):
-        print("⚽🎉 ¡GOOOOL! ¡HAS APROBADO! 🎉⚽")
-        time.sleep(0.5)
-
-if nota < 2:
-    print("Muy insuficiente 😞 Necesitas entrenar más.")
-elif 3 <= nota < 5:
-    print("Insuficiente 😕 Puedes mejorar bastante.")
-elif 5 <= nota < 6:
-    print("Suficiente 🙂 Has aprobado por poco.")
-    animacion_aprobado()
-elif 6 <= nota < 7:
-    print("Bien 👍 Buen partido.")
-    animacion_aprobado()
-elif 7 <= nota < 9:
-    print("Notable 👏 Gran actuación.")
-    animacion_aprobado()
-elif 9 <= nota < 10:
-    print("Sobresaliente 🌟 Partido espectacular.")
-    animacion_aprobado()
-elif nota == 10:
-    print("Excelente 🏆 ¡Hat-trick perfecto!")
-    animacion_aprobado()
-
-informe += f"## 📝 Resumen\n\n"
-informe += f"- Correctas: {correctas}\n"
-informe += f"- Incorrectas: {incorrectas}\n"
-informe += f"- Nota final: {nota}\n"
-
-with open("informe.md", "w", encoding="utf-8") as archivo:
-    archivo.write(informe)
-
-print("\n📄 Se ha generado el archivo 'informe.md' con el informe del examen.")
-
+        st.write("Primero tienes que hacer el examen.")
